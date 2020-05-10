@@ -1,74 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <style>
-        // our CSS here!
-    </style>
-</head>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
 <body>
-    <div id="graphDiv"></div>
-
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script>
-        // Our Custom D3 JavaScript here!
-        var graphData = {{ data.chart_data | safe }}
-        var margin = {top: 30, right: 50, bottom: 30, left: 50};
-        var svgWidth = 600;
-        var svgHeight = 270;
-        var graphWidth = svgWidth - margin.left - margin.right;
-        var graphHeight = svgHeight - margin.top - margin.bottom;
-        var parseDate = d3.time.format("%Y-%m-%d").parse;
-        var x = d3.time.scale().range([0, graphWidth]);
-        var y = d3.scale.linear().range([graphHeight, 0]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-        var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
-        var highLine = d3.svg.line().x(function(d) { return x(d.Date); }).y(function(d) { return y(d.High); });
-        var area = d3.svg.area().x(function(d) { return x(d.Date); }).y1(function(d) { return y(d.High); })
-        var svg = d3.select("#graphDiv").append("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight).append("g")
-        .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")")
-        function draw(data) {
-      data.forEach(function(d) {
-        d.Date = parseDate(d.Date);
-        d.High = +d.High;
-      });
-      // Scale the range of the data
-      x.domain(d3.extent(data, function(d) { return d.Date; }));
-      y.domain([d3.min(data, function(d) {
-          return Math.min(d.High) }),
-          d3.max(data, function(d) {
-          return Math.max(d.High) })]);
-      // Add the area path.
-      svg.append("path")
-        .datum(data)
-        .attr("class", "area")
-        .attr("d", area)
-      // Add the 2 valueline paths.
-      svg.append("path")
-        .style("stroke", "green")
-        .style("fill", "none")
-        .attr("class", "line")
-        .attr("d", highLine(data));
-        svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + graphHeight + ")")
-          .call(xAxis);
-      // Add the Y Axis
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-      svg.append("text")
-        .attr("transform", "translate("+(graphWidth+3)+","+y(graphData[0].High)+")")
-        .attr("dy", ".35em")
-        .attr("text-anchor", "start")
-        .style("fill", "green")
-        .text("High");
-    };
-    draw(graphData);
-    </script>
-    <div> hello world</div>
+  <h2>COVID Tweets Sentiment Analysis</h2>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+  <script>
+    var dataset = {{ data | safe }};
+    console.log(dataset)
+</script>
+  <script type="text/javascript"
+  src="{{ url_for('static', filename='sentimentCount.js') }}"></script>
 </body>
-</html>
